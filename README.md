@@ -1,1 +1,2 @@
 # byc-coser
+通过electron来展示从半次元coser板块爬取到的coser图片，及下载等功能
