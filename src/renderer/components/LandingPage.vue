@@ -4,8 +4,8 @@
       <li
         v-for="navInfo in navList"
         :key="navInfo.title"
-        class="recommend-nav__item"
-      >{{ navInfo.title }}</li>
+        class="nav-item"
+        @click="changeCategory(navInfo)">{{ navInfo.title }}</li>
     </ul>
     <div class="recommend-content">
       <div class="recommend-contnet__header">
@@ -44,6 +44,14 @@ export default {
       //   // 回调函数内容，此处是将路径内容显示在input框内
       //   // downloadFolder.value = res[0]
       // })
+    },
+    // 获取分类
+    changeCategory (navInfo) {
+      ipcRenderer.send('getCategoryImg', navInfo.link)
+      ipcRenderer.once('getCategoryImg', (event, arg) => {
+        console.log(arg)
+        this.imgList = arg.imglist
+      })
     }
   },
   mounted () {
@@ -67,6 +75,16 @@ export default {
   }
   &-content {
     flex: 1;
+  }
+}
+.nav {
+  &-item {
+    padding: 8px;
+    cursor: pointer;
+    background-color: #eee;
+    & + & {
+      margin-top: 12px;
+    }
   }
 }
 </style>

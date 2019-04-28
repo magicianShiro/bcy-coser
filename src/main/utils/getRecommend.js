@@ -9,6 +9,8 @@ const MAIN_PATH = 'https://bcy.net'
 // const PATH = 'https://www.baidu.com/'
 // const PATH = 'https://www.moe123.net/'
 
+const NAV_BLACK_LIST = ['最新COS']
+
 async function spide (path = '') {
   var options = {
     uri: path,
@@ -29,22 +31,41 @@ async function mainData () {
   let $ = await spide(path)
   $('.l-center-banner .fz16').each(function (i, item) {
     navlist.push({
-      title: $(item).text(),
+      title: $(item).text().trim(),
       link: MAIN_PATH + $(item).attr('href')
     })
   })
+
   $('.js-coserIndexList .js-smallCards').each(function (i, item) {
     imglist.push({
       imgSrc: $(this).find('.cardImage').attr('src'),
       detailSrc: MAIN_PATH + $(this).find('.posr').attr('href'),
       avatarImg: $(this).find('._avatar--user img').attr('src'),
       userPage: MAIN_PATH + $(this).find('._avatar--user').attr('href'),
-      niceName: $(this).find('.username').text(),
-      like: $(this).find('.l-right .like').text()
+      niceName: $(this).find('.username').text().trim(),
+      like: $(this).find('.l-right .like').text().trim()
     })
   })
   return {
-    navlist,
+    navlist: navlist.filter(v => !NAV_BLACK_LIST.includes(v.title)),
+    imglist
+  }
+}
+
+async function getSmallCards (path) {
+  let imglist = []
+  let $ = await spide(path)
+  $('.smallCards .js-smallCards').each(function (i, item) {
+    imglist.push({
+      imgSrc: $(this).find('.cardImage').attr('src'),
+      detailSrc: MAIN_PATH + $(this).find('.posr').attr('href'),
+      avatarImg: $(this).find('._avatar--user img').attr('src'),
+      userPage: MAIN_PATH + $(this).find('._avatar--user').attr('href'),
+      niceName: $(this).find('.username').text().trim(),
+      like: $(this).find('.l-right').text().trim()
+    })
+  })
+  return {
     imglist
   }
 }
@@ -52,4 +73,9 @@ async function mainData () {
 ipcMain.on('getRecommend', async (event, arg) => {
   let result = await mainData()
   event.sender.send('getRecommend', result)
+})
+
+ipcMain.on('getCategoryImg', async (event, link) => {
+  let result = await getSmallCards(link)
+  event.sender.send('getCategoryImg', result)
 })
