@@ -2,6 +2,7 @@
 
 import { app, BrowserWindow, ipcMain } from 'electron'
 import './utils/getRecommend'
+import './utils/getImgAlbum'
 
 /**
  * Set `__static` path to static files in production

@@ -11,7 +11,7 @@
       <div class="recommend-contnet__header">
         <button @click="download(imgList[0].imgSrc)">下载</button>
       </div>
-      <img v-for="(cosInfo, index) in imgList" :key="index" :src="cosInfo.imgSrc" alt>
+      <img @click="getAlbum(cosInfo.detailSrc)" v-for="(cosInfo, index) in imgList" :key="index" :src="cosInfo.imgSrc" alt>
     </div>
   </div>
 </template>
@@ -52,11 +52,20 @@ export default {
         console.log(arg)
         this.imgList = arg.imglist
       })
+    },
+    // 获取相册详情
+    getAlbum (detailSrc) {
+      this.$router.push({
+        name: 'album',
+        query: {
+          link: detailSrc
+        }
+      })
     }
   },
   mounted () {
     ipcRenderer.send('getRecommend')
-    ipcRenderer.on('getRecommend', (event, arg) => {
+    ipcRenderer.once('getRecommend', (event, arg) => {
       this.navList = arg.navlist
       this.imgList = arg.imglist
       // console.log(imgList)
