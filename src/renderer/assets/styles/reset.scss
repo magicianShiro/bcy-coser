@@ -1,8 +1,31 @@
-div,p,ul,ol {
+html, body, div,p,ul,ol {
   margin: 0;
   padding: 0;
 }
 
 ul, ol {
   list-style: none;
+}
+
+img {
+  vertical-align: middle;
+}
+
+.lf {
+  float: left;
+}
+
+.rf {
+  float: right;
+}
+
+.clearfix {
+  &::after {
+    content: '';
+    height: 0;
+    font-size: 0;
+    visibility: hidden;
+    overflow: hidden;
+    clear: both;
+  }
 }
